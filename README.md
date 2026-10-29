@@ -36,3 +36,4 @@ docker compose exec app php artisan test
 - **JSON Postman**: [`public_html/swagger/postman_collection.json`](./public_html/swagger/postman_collection.json)
 - **JSON Insomnia**: [`public_html/swagger/insomnia_collection.json`](./public_html/swagger/insomnia_collection.json)
 - **Documento Técnico**: [`public_html/swagger/DOCUMENTACION_API.md`](./public_html/swagger/DOCUMENTACION_API.md)
+
