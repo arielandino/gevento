@@ -1,0 +1,498 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Gevento Products & Multi-Currency API",
+    "version": "1.0.0",
+    "description": "API RESTful desarrollada en Laravel para la gestión de productos, costos de impuestos/fabricación y precios multi-divisa utilizando Eloquent ORM.",
+    "contact": {
+      "name": "Backend Engineering Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://gevento.loc",
+      "description": "Servidor Local Devilbox (Raíz)"
+    },
+    {
+      "url": "http://gevento.loc/api",
+      "description": "Servidor Local Devilbox (Prefijo /api)"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "Laravel Artisan Serve"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Products",
+      "description": "Operaciones CRUD de productos"
+    },
+    {
+      "name": "Product Prices",
+      "description": "Gestión de precios de productos en múltiples divisas"
+    },
+    {
+      "name": "Currencies",
+      "description": "Catálogo de divisas y tasas de cambio"
+    }
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Obtener lista de productos",
+        "description": "Retorna el listado de productos registrados junto con su divisa base y precios en otras divisas. Soporta filtros opcionales y paginación.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "Filtrar por nombre o descripción del producto"
+          },
+          {
+            "name": "currency_id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" },
+            "description": "Filtrar por ID de divisa base"
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "number", "format": "float" },
+            "description": "Precio base mínimo"
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "number", "format": "float" },
+            "description": "Precio base máximo"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 },
+            "description": "Cantidad de registros por página (activa paginación)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de productos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Product" }
+                    },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Lista de productos obtenida correctamente." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "summary": "Crear un nuevo producto",
+        "description": "Registra un nuevo producto con su divisa base, precio, costo de impuestos y costo de fabricación.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Product" },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Producto creado correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Obtener un producto por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID único del producto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle del producto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Product" },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Producto obtenido correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "put": {
+        "tags": ["Products"],
+        "summary": "Actualizar un producto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID único del producto"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductUpdateInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Producto actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Product" },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Producto actualizado correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Eliminar un producto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID único del producto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Producto eliminado correctamente." },
+                    "data": { "type": "string", "nullable": true, "example": null }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      }
+    },
+    "/products/{id}/prices": {
+      "get": {
+        "tags": ["Product Prices"],
+        "summary": "Obtener lista de precios de un producto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID único del producto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de precios del producto en diferentes divisas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/ProductPrice" }
+                    },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Lista de precios del producto obtenida correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" }
+        }
+      },
+      "post": {
+        "tags": ["Product Prices"],
+        "summary": "Crear un nuevo precio para un producto",
+        "description": "Registra o actualiza el precio de un producto en una divisa específica.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID único del producto"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductPriceInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Precio registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/ProductPrice" },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Precio del producto registrado correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/currencies": {
+      "get": {
+        "tags": ["Currencies"],
+        "summary": "Obtener lista de divisas",
+        "responses": {
+          "200": {
+            "description": "Lista de divisas disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Currency" }
+                    },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Lista de divisas obtenida correctamente." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Currencies"],
+        "summary": "Crear una nueva divisa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CurrencyInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Divisa creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Currency" },
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Divisa creada correctamente." }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Currency": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "USD" },
+          "symbol": { "type": "string", "example": "$" },
+          "exchange_rate": { "type": "number", "format": "float", "example": 1.0 },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CurrencyInput": {
+        "type": "object",
+        "required": ["name", "symbol", "exchange_rate"],
+        "properties": {
+          "name": { "type": "string", "example": "BRL" },
+          "symbol": { "type": "string", "example": "R$" },
+          "exchange_rate": { "type": "number", "format": "float", "example": 5.65 }
+        }
+      },
+      "ProductPrice": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "product_id": { "type": "integer", "example": 1 },
+          "currency_id": { "type": "integer", "example": 2 },
+          "price": { "type": "number", "format": "float", "example": 3219.08 },
+          "currency": { "$ref": "#/components/schemas/Currency" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProductPriceInput": {
+        "type": "object",
+        "required": ["currency_id", "price"],
+        "properties": {
+          "currency_id": { "type": "integer", "example": 2, "description": "ID de la divisa (ej. 2 = EUR)" },
+          "price": { "type": "number", "format": "float", "example": 3219.08, "description": "Precio del producto en la divisa especificada" }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "MacBook Pro 16\" M3 Max" },
+          "description": { "type": "string", "example": "Portátil profesional de alto rendimiento con chip M3 Max, 36GB RAM y 1TB SSD." },
+          "price": { "type": "number", "format": "float", "example": 3499.0 },
+          "currency_id": { "type": "integer", "example": 1 },
+          "tax_cost": { "type": "number", "format": "float", "example": 349.9 },
+          "manufacturing_cost": { "type": "number", "format": "float", "example": 1850.0 },
+          "currency": { "$ref": "#/components/schemas/Currency" },
+          "prices": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductPrice" }
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProductInput": {
+        "type": "object",
+        "required": ["name", "description", "price", "currency_id", "tax_cost", "manufacturing_cost"],
+        "properties": {
+          "name": { "type": "string", "example": "Auriculares Sony WH-1000XM5" },
+          "description": { "type": "string", "example": "Auriculares inalámbricos con cancelación activa de ruido líder en la industria." },
+          "price": { "type": "number", "format": "float", "example": 399.99 },
+          "currency_id": { "type": "integer", "example": 1 },
+          "tax_cost": { "type": "number", "format": "float", "example": 40.0 },
+          "manufacturing_cost": { "type": "number", "format": "float", "example": 180.0 }
+        }
+      },
+      "ProductUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Auriculares Sony WH-1000XM5 (Edición Especial)" },
+          "description": { "type": "string", "example": "Auriculares inalámbricos con estuche rígido y ANC mejorado." },
+          "price": { "type": "number", "format": "float", "example": 419.99 },
+          "currency_id": { "type": "integer", "example": 1 },
+          "tax_cost": { "type": "number", "format": "float", "example": 42.0 },
+          "manufacturing_cost": { "type": "number", "format": "float", "example": 185.0 }
+        }
+      }
+    },
+    "responses": {
+      "NotFoundError": {
+        "description": "Recurso no encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "El recurso solicitado no fue encontrado." },
+                "data": { "type": "string", "nullable": true, "example": null }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Error de validación de datos",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": { "type": "string", "example": "Los datos proporcionados no son válidos." },
+                "errors": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

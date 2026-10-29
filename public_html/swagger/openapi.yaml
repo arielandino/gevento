@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Gevento Products & Multi-Currency API
+  version: 1.0.0
+  description: >-
+    API RESTful desarrollada en Laravel para la gestión de productos, costos de
+    impuestos/fabricación y precios multi-divisa utilizando Eloquent ORM.
+servers:
+  - url: http://gevento.loc
+    description: Servidor Local Devilbox (Raíz)
+  - url: http://gevento.loc/api
+    description: Servidor Local Devilbox (Prefijo /api)
+  - url: http://localhost:8000
+    description: Laravel Artisan Serve
+tags:
+  - name: Products
+    description: Operaciones CRUD de productos
+  - name: Product Prices
+    description: Gestión de precios de productos en múltiples divisas
+  - name: Currencies
+    description: Catálogo de divisas y tasas de cambio
+paths:
+  /products:
+    get:
+      tags: [Products]
+      summary: Obtener lista de productos
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: currency_id
+          in: query
+          schema:
+            type: integer
+        - name: min_price
+          in: query
+          schema:
+            type: number
+        - name: max_price
+          in: query
+          schema:
+            type: number
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de productos obtenida exitosamente
+    post:
+      tags: [Products]
+      summary: Crear un nuevo producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+        '422':
+          description: Error de validación
+  /products/{id}:
+    get:
+      tags: [Products]
+      summary: Obtener un producto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle del producto
+        '404':
+          description: Producto no encontrado
+    put:
+      tags: [Products]
+      summary: Actualizar un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente
+        '404':
+          description: Producto no encontrado
+        '422':
+          description: Error de validación
+    delete:
+      tags: [Products]
+      summary: Eliminar un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto eliminado correctamente
+        '404':
+          description: Producto no encontrado
+  /products/{id}/prices:
+    get:
+      tags: [Product Prices]
+      summary: Obtener lista de precios de un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de precios del producto
+        '404':
+          description: Producto no encontrado
+    post:
+      tags: [Product Prices]
+      summary: Crear un nuevo precio para un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPriceInput'
+      responses:
+        '201':
+          description: Precio registrado exitosamente
+        '404':
+          description: Producto no encontrado
+        '422':
+          description: Error de validación
+components:
+  schemas:
+    ProductInput:
+      type: object
+      required:
+        - name
+        - description
+        - price
+        - currency_id
+        - tax_cost
+        - manufacturing_cost
+      properties:
+        name:
+          type: string
+          example: Auriculares Sony WH-1000XM5
+        description:
+          type: string
+          example: Auriculares inalámbricos con cancelación activa de ruido.
+        price:
+          type: number
+          format: float
+          example: 399.99
+        currency_id:
+          type: integer
+          example: 1
+        tax_cost:
+          type: number
+          format: float
+          example: 40.0
+        manufacturing_cost:
+          type: number
+          format: float
+          example: 180.0
+    ProductPriceInput:
+      type: object
+      required:
+        - currency_id
+        - price
+      properties:
+        currency_id:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: float
+          example: 367.99
+

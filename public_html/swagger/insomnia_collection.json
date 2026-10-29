@@ -1,0 +1,196 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-10-29T13:50:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_gevento_api",
+      "parentId": null,
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "name": "Gevento Products API (Laravel)",
+      "description": "Colección Insomnia para la API RESTful de Gestión de Productos y Precios Multi-divisa.",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_gevento_base",
+      "parentId": "wrk_gevento_api",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "name": "Base Environment (Devilbox)",
+      "data": {
+        "base_url": "http://gevento.loc"
+      },
+      "isPrivate": false,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_products",
+      "parentId": "wrk_gevento_api",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "name": "Products",
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_product_prices",
+      "parentId": "wrk_gevento_api",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "name": "Product Prices",
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_currencies",
+      "parentId": "wrk_gevento_api",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "name": "Currencies",
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_products_list",
+      "parentId": "fld_products",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products",
+      "name": "GET /products - Obtener lista de productos",
+      "method": "GET",
+      "body": {},
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_products_create",
+      "parentId": "fld_products",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products",
+      "name": "POST /products - Crear un nuevo producto",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Auriculares Sony WH-1000XM5\",\n  \"description\": \"Auriculares inalámbricos con cancelación de ruido activa.\",\n  \"price\": 399.99,\n  \"currency_id\": 1,\n  \"tax_cost\": 40.00,\n  \"manufacturing_cost\": 180.00\n}"
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_products_show",
+      "parentId": "fld_products",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products/1",
+      "name": "GET /products/{id} - Obtener un producto por ID",
+      "method": "GET",
+      "body": {},
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_products_update",
+      "parentId": "fld_products",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products/1",
+      "name": "PUT /products/{id} - Actualizar un producto",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"MacBook Pro 16 M3 Max (Actualizado)\",\n  \"description\": \"Portátil profesional con chip M3 Max, 64GB RAM y 2TB SSD.\",\n  \"price\": 3899.00,\n  \"currency_id\": 1,\n  \"tax_cost\": 389.90,\n  \"manufacturing_cost\": 1950.00\n}"
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_products_delete",
+      "parentId": "fld_products",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products/1",
+      "name": "DELETE /products/{id} - Eliminar un producto",
+      "method": "DELETE",
+      "body": {},
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_product_prices_list",
+      "parentId": "fld_product_prices",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products/1/prices",
+      "name": "GET /products/{id}/prices - Obtener lista de precios de un producto",
+      "method": "GET",
+      "body": {},
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_product_prices_create",
+      "parentId": "fld_product_prices",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/products/1/prices",
+      "name": "POST /products/{id}/prices - Crear un nuevo precio para un producto",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"currency_id\": 5,\n  \"price\": 14870750.00\n}"
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_currencies_list",
+      "parentId": "fld_currencies",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/currencies",
+      "name": "GET /currencies - Obtener lista de divisas",
+      "method": "GET",
+      "body": {},
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "_type": "request"
+    },
+    {
+      "_id": "req_currencies_create",
+      "parentId": "fld_currencies",
+      "modified": 1730209800000,
+      "created": 1730209800000,
+      "url": "{{ _.base_url }}/currencies",
+      "name": "POST /currencies - Crear una nueva divisa",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"BRL\",\n  \"symbol\": \"R$\",\n  \"exchange_rate\": 5.65\n}"
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "_type": "request"
+    }
+  ]
+}

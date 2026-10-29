@@ -1,0 +1,179 @@
+{
+  "info": {
+    "name": "Gevento Products API (Laravel)",
+    "_postman_id": "8e3b9f12-4d9a-4b11-9c2a-7a2b5c8d1e00",
+    "description": "Colección completa para probar la API RESTful de Gestión de Productos y Precios Multi-divisa en Devilbox (http://gevento.loc).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://gevento.loc",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "GET /products - Obtener lista de productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "POST /products - Crear un nuevo producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Auriculares Sony WH-1000XM5\",\n  \"description\": \"Auriculares inalámbricos con cancelación de ruido activa.\",\n  \"price\": 399.99,\n  \"currency_id\": 1,\n  \"tax_cost\": 40.00,\n  \"manufacturing_cost\": 180.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "GET /products/{id} - Obtener un producto por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "PUT /products/{id} - Actualizar un producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MacBook Pro 16 M3 Max (Actualizado)\",\n  \"description\": \"Portátil profesional con chip M3 Max, 64GB RAM y 2TB SSD.\",\n  \"price\": 3899.00,\n  \"currency_id\": 1,\n  \"tax_cost\": 389.90,\n  \"manufacturing_cost\": 1950.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /products/{id} - Eliminar un producto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Prices",
+      "item": [
+        {
+          "name": "GET /products/{id}/prices - Obtener lista de precios de un producto",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/1/prices",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1", "prices"]
+            }
+          }
+        },
+        {
+          "name": "POST /products/{id}/prices - Crear un nuevo precio para un producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency_id\": 5,\n  \"price\": 14870750.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1/prices",
+              "host": ["{{base_url}}"],
+              "path": ["products", "1", "prices"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Currencies",
+      "item": [
+        {
+          "name": "GET /currencies - Obtener lista de divisas",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/currencies",
+              "host": ["{{base_url}}"],
+              "path": ["currencies"]
+            }
+          }
+        },
+        {
+          "name": "POST /currencies - Crear una nueva divisa",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"BRL\",\n  \"symbol\": \"R$\",\n  \"exchange_rate\": 5.65\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/currencies",
+              "host": ["{{base_url}}"],
+              "path": ["currencies"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
