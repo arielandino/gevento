@@ -20,27 +20,21 @@ API RESTful desarrollada en **Laravel** para la gestión de productos, costos de
 
 ---
 
-## Levantar en otra PC con un solo comando (Docker Compose)
-
-Si clonas este repositorio en otra computadora (sin Devilbox ni PHP instalado localmente), puedes levantar toda la infraestructura (**PHP 8.4 + Apache + Composer + MariaDB 10.6 + Migraciones y Seeders automáticos**) con un único comando:
+## Cómo levantarlo en otra PC
 
 ```bash
 docker compose up -d --build
 ```
 
-El contenedor ejecutará automáticamente:
-1. Creación de `.env` y generación de `APP_KEY` (si no existen).
-2. `composer install` (si no existe `vendor/`).
-3. Espera activa a que MariaDB esté saludable (`service_healthy`).
-4. `php artisan migrate --seed --force` (crea tablas y carga divisas y productos iniciales).
+Una vez iniciado:
 
-Una vez levantado estará disponible en:
-- **API Base URL**: `http://localhost:8080` (ej. `http://localhost:8080/products`)
-- **Swagger UI Interactivo**: `http://localhost:8080/swagger/index.html`
-- **Ejecutar tests dentro del contenedor**:
-  ```bash
-  docker compose exec app php artisan test
-  ```
+- **API**: http://localhost:8080/products
+- **Swagger UI**: http://localhost:8080/swagger/index.html
+- **Correr los 36 tests en el contenedor**:
+
+```bash
+docker compose exec app php artisan test
+```
 
 ---
 
